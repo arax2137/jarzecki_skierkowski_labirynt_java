@@ -1,8 +1,12 @@
+
 import java.util.ArrayList;
 
 public class Main {
 
     public static void main(String[] args) {
+
+        //TODO dodac pary
+        //TODO dodac zczytywanie punktu startowego i koncowego
 
         String filename = "maze.txt";
 
@@ -24,8 +28,6 @@ public class Main {
 
         System.out.println("x = "+maze.getSize_x() +"\ty = "+maze.getSize_y());
         System.out.println(maze.toString());
-
-
 
 
     }

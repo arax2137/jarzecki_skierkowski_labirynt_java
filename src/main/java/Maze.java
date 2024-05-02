@@ -26,6 +26,19 @@ public class Maze {
     public void setSize_y(int size_y) {
         this.size_y = size_y;
     }
+    public char getCell(int y, int x){
+        return mAr[y][x];
+    }
+
+    /**
+     * Zmienia wartość komórki w tabeli 2D {@link Maze#mAr} na pozycji ({@code y},{@code x}) na wartość {@code a}
+     * @param y
+     * @param x
+     * @param a
+     */
+    public void setCell(int y, int x, char a){
+        mAr[y][x] = a;
+    }
 
     /**
      *Przypisuje polom {@link Maze#size_x} i {@link Maze#size_y} odpowiednie wartości podczas czytania z pliku
@@ -99,16 +112,6 @@ public class Maze {
         getSizeT();
         mAr = new char[size_y][size_x];
         readT();
-    }
-
-    /**
-     * Zmienia wartość komórki w tabeli 2D {@link Maze#mAr} na pozycji ({@code y},{@code x}) na wartość {@code a}
-     * @param y
-     * @param x
-     * @param a
-     */
-    public void setCell(int y, int x, char a){
-        mAr[y][x] = a;
     }
 
     /**
