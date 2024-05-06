@@ -1,19 +1,34 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Maze {
-    private String name;
-    private int size_x = 0;
-    private int size_y = 0;
+
+    private String filename;
+    private int size_x;
+    private int size_y;
+    private int start_x;
+    private int start_y;
+    private int end_x;
+    private int end_y;
     private char mAr[][];
 
     public Maze(String name) {
-        this.name = name;
+        this.filename = name;
     }
 
+    public int getStart_x() {
+        return start_x;
+    }
+    public int getStart_y() {
+        return start_y;
+    }
+    public int getEnd_x() {
+        return end_x;
+    }
+    public int getEnd_y() {
+        return end_y;
+    }
     public int getSize_x() {
         return size_x;
     }
@@ -44,7 +59,12 @@ public class Maze {
      *Przypisuje polom {@link Maze#size_x} i {@link Maze#size_y} odpowiednie wartości podczas czytania z pliku
      */
     public void getSizeT(){
-        File f = new File("mazes/"+name);
+        File f = null;
+        try {
+            f = new File("mazes/"+ filename);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         //LICZYMY X SIZE
         try {
@@ -67,13 +87,19 @@ public class Maze {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     /**
      * Odczytuje labirynt z pliku tekstowego i wpisuje go do tabeli {@link Maze#mAr}
      */
     public void readT(){
-        File f = new File("mazes/"+name);
+        File f = null;
+        try {
+            f = new File("mazes/"+ filename);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         try {
             FileReader r = new FileReader(f);
 
@@ -91,6 +117,14 @@ public class Maze {
                     ;
                 }
                 else{
+                    if((char) c == 'P'){
+                        start_x = x;
+                        start_y = y;
+                    }
+                    if((char) c == 'K'){
+                        end_x = x;
+                        end_y = y;
+                    }
                     setCell(y, x, (char) c);
                     x++;
                 }
@@ -104,6 +138,40 @@ public class Maze {
 
 
     }
+/*
+    public void readB(){
+
+        int fileID;
+        char escape;
+        int columns;
+        int lines;
+        int entry_x;
+        int entry_y;
+        int exit_x;
+        int exit_y;
+        int reserved;
+        int counter;
+        int solOff;
+        int separator;
+
+
+
+
+        InputStream in = null;
+        try {
+            in = new FileInputStream(filename);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        byte buff[12];
+        Arrays.fill(buff, null);
+
+
+
+
+    }
+
+ */
 
     /**
      * Inicjuje labirynt dla pliku tekstowego - zczytuje wielkość labiryntu za pomocą {@link Maze#getSizeT()}, tworzy tablicę 2D {@link Maze#mAr}, zczytuje labirynt do tablicy za pomocą {@link Maze#readT()}
