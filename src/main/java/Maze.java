@@ -1,4 +1,6 @@
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -58,7 +60,7 @@ public class Maze {
     /**
      *Przypisuje polom {@link Maze#size_x} i {@link Maze#size_y} odpowiednie wartości podczas czytania z pliku
      */
-    public void getSizeT(){
+    private void getSizeT(){
         File f = null;
         try {
             f = new File("mazes/"+ filename);
@@ -93,7 +95,7 @@ public class Maze {
     /**
      * Odczytuje labirynt z pliku tekstowego i wpisuje go do tabeli {@link Maze#mAr}
      */
-    public void readT(){
+    private void readT(){
         File f = null;
         try {
             f = new File("mazes/"+ filename);
@@ -138,49 +140,168 @@ public class Maze {
 
 
     }
-/*
-    public void readB(){
+
+    private void getParamsB(){
 
         int fileID;
-        char escape;
+        int escape;
+        int solOff;
         int columns;
         int lines;
         int entry_x;
         int entry_y;
         int exit_x;
         int exit_y;
-        int reserved;
         int counter;
-        int solOff;
-        int separator;
+        char separator;
+        char wall;
+        char path;
 
+        byte buff[] = new byte[12];
+        Arrays.fill(buff, (byte) 0);
 
 
 
         InputStream in = null;
         try {
-            in = new FileInputStream(filename);
+            in = new FileInputStream("mazes/"+filename);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        byte buff[12];
-        Arrays.fill(buff, null);
+
+        try {
+            ByteBuffer b;
+
+
+            in.read(buff,0,4);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            fileID = b.getInt();
+            Arrays.fill(buff, (byte) 0);
+
+            in.read(buff,0,1);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            escape = b.getInt();
+            Arrays.fill(buff, (byte) 0);
+
+
+            in.read(buff,0,2);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            columns = b.getInt();
+            Arrays.fill(buff, (byte) 0);
+
+            in.read(buff,0,2);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            lines = b.getInt();
+            Arrays.fill(buff, (byte) 0);
+
+            in.read(buff,0,2);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            entry_x = b.getInt();
+            Arrays.fill(buff, (byte) 0);
+
+            in.read(buff,0,2);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            entry_y = b.getInt();
+            Arrays.fill(buff, (byte) 0);
+
+            in.read(buff,0,2);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            exit_x = b.getInt();
+            Arrays.fill(buff, (byte) 0);
+
+            in.read(buff,0,2);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            exit_y = b.getInt();
+            Arrays.fill(buff, (byte) 0);
+
+            //RESERVED (useless)
+            in.read(buff,0,12);
+            Arrays.fill(buff, (byte) 0);
+
+            in.read(buff,0,4);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            counter = b.getInt();
+            Arrays.fill(buff, (byte) 0);
+
+            in.read(buff,0,4);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            solOff = b.getInt();
+            Arrays.fill(buff, (byte) 0);
+
+            in.read(buff,0,1);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            separator = b.getChar();
+            Arrays.fill(buff, (byte) 0);
+
+            in.read(buff,0,1);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            wall = b.getChar();
+            Arrays.fill(buff, (byte) 0);
+
+            in.read(buff,0,1);
+            b = ByteBuffer.wrap(buff);
+            b.order(ByteOrder.LITTLE_ENDIAN);
+            path = b.getChar();
+            Arrays.fill(buff, (byte) 0);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        this.start_x = entry_x-1;
+        this.start_y = entry_y-1;
+        this.end_x = exit_x-1;
+        this.end_y = exit_y-1;
+        this.size_x = columns-1;
+        this.size_y = lines-1;
+
+        System.out.println("\nBinary file parameters:\nFileID = " + Integer.toHexString(fileID) + "\nEscape = " + Integer.toHexString(escape) + "\nColumns = " + columns +
+                "\nLines = " + lines + "\nEntryX = " + entry_x + "\nEntryY = " + entry_y + "\nExitX = " + exit_x + "\nExitY = " + exit_y + "\nCounter = " + counter +
+                "\nSolutionOffset = " + solOff + "\nSeparator = " + separator + "\nWall = " + wall + "\nPath = " + path);
 
 
 
 
     }
 
- */
+
 
     /**
-     * Inicjuje labirynt dla pliku tekstowego - zczytuje wielkość labiryntu za pomocą {@link Maze#getSizeT()}, tworzy tablicę 2D {@link Maze#mAr}, zczytuje labirynt do tablicy za pomocą {@link Maze#readT()}
+     * Inicjuje labirynt, rozpoznaje rozszerzenie pliku
      */
-    public void mInitT(){
-        getSizeT();
-        mAr = new char[size_y][size_x];
-        readT();
+    public void Init(){
+
+        if(filename.endsWith(".bin")){
+            System.out.println("Working on binary file");
+            getParamsB();
+            mAr = new char[size_y][size_x];
+
+        }
+        else if(filename.endsWith(".txt")){
+            System.out.println("Working on text file");
+            getSizeT();
+            mAr = new char[size_y][size_x];
+            readT();
+        }
+        else{
+            System.out.println("File type not recognized");
+            System.exit(2);
+        }
+
+
     }
+
 
     /**
      * Zwraca jako String zawartość tabeli {@link Maze#mAr}
@@ -198,6 +319,14 @@ public class Maze {
         }
 
         return output;
+    }
+
+    /**
+     * Zwraca parametry labiryntu
+     * @return void
+     */
+    public String paramsToString(){
+        return "\nMaze parameters:\nx = "+size_x +"\ny = "+size_y + "\nstart_x = " + start_x + "\nstart_y = " + start_y + "\nend_x = " + end_x + "\nend_y = " + end_y;
     }
 
 
