@@ -4,7 +4,7 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Maze {
+public class Maze implements ClassConstants {
 
     private String filename;
     private int size_x;
@@ -14,6 +14,11 @@ public class Maze {
     private int end_x;
     private int end_y;
     private char mAr[][];
+    //pola do obslugi pliku binarnego
+    private int counter;
+    private char wall;
+    private char path;
+    private char separator;
 
     public Maze(String name) {
         this.filename = name;
@@ -22,48 +27,50 @@ public class Maze {
     public int getStart_x() {
         return start_x;
     }
+
     public int getStart_y() {
         return start_y;
     }
+
     public int getEnd_x() {
         return end_x;
     }
+
     public int getEnd_y() {
         return end_y;
     }
+
     public int getSize_x() {
         return size_x;
     }
+
     public int getSize_y() {
         return size_y;
     }
+
     public void setSize_x(int size_x) {
         this.size_x = size_x;
     }
+
     public void setSize_y(int size_y) {
         this.size_y = size_y;
     }
-    public char getCell(int y, int x){
+
+    public char getCell(int y, int x) {
         return mAr[y][x];
     }
 
-    /**
-     * Zmienia wartość komórki w tabeli 2D {@link Maze#mAr} na pozycji ({@code y},{@code x}) na wartość {@code a}
-     * @param y
-     * @param x
-     * @param a
-     */
-    public void setCell(int y, int x, char a){
+    public void setCell(int y, int x, char a) {
         mAr[y][x] = a;
     }
 
     /**
-     *Przypisuje polom {@link Maze#size_x} i {@link Maze#size_y} odpowiednie wartości podczas czytania z pliku
+     * Przypisuje polom {@link Maze#size_x} i {@link Maze#size_y} odpowiednie wartości podczas czytania z pliku
      */
-    private void getSizeT(){
+    private void getSizeT() {
         File f = null;
         try {
-            f = new File("mazes/"+ filename);
+            f = new File("mazes/" + filename);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -72,9 +79,10 @@ public class Maze {
         try {
             FileReader r = new FileReader(f);
             int c;
-            while((c = r.read()) != '\n' && c != '\r'){
+            while ((c = r.read()) != '\n' && c != '\r') {
                 size_x++;
             }
+            r.close();
         } catch (IOException e) {
             System.err.println("Nie znaleziono pliku");
             System.exit(1);
@@ -82,10 +90,11 @@ public class Maze {
         //LICZYMY Y SIZE
         try {
             Scanner s = new Scanner(f);
-            while(s.hasNextLine()){
+            while (s.hasNextLine()) {
                 size_y++;
                 s.nextLine();
             }
+            s.close();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -95,10 +104,10 @@ public class Maze {
     /**
      * Odczytuje labirynt z pliku tekstowego i wpisuje go do tabeli {@link Maze#mAr}
      */
-    private void readT(){
+    private void readT() {
         File f = null;
         try {
-            f = new File("mazes/"+ filename);
+            f = new File("mazes/" + filename);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -109,28 +118,27 @@ public class Maze {
             int x = 0;
             int y = 0;
 
-            while((c = r.read()) != -1){
+            while ((c = r.read()) != -1) {
                 //System.out.println("Reading: y = "+y+" x = "+x+" c = "+(char)c);
-                if((char) c == '\n'){
+                if ((char) c == '\n') {
                     y++;
                     x = 0;
-                }
-                else if((char) c == '\r'){
+                } else if ((char) c == '\r') {
                     ;
-                }
-                else{
-                    if((char) c == 'P'){
+                } else {
+                    if ((char) c == 'P') {
                         start_x = x;
                         start_y = y;
                     }
-                    if((char) c == 'K'){
+                    if ((char) c == 'K') {
                         end_x = x;
                         end_y = y;
                     }
-                    setCell(y, x, (char) c);
+                    mAr[y][x] = (char) c;
                     x++;
                 }
             }
+            r.close();
         } catch (FileNotFoundException e) {
             System.err.println("Nie znaleziono pliku");
             System.exit(1);
@@ -141,7 +149,10 @@ public class Maze {
 
     }
 
-    private void getParamsB(){
+    /**
+     * zczytuje parametry nagłówka pliku binarnego
+     */
+    private void getParamsB() {
 
         int fileID;
         int escape;
@@ -161,10 +172,9 @@ public class Maze {
         Arrays.fill(buff, (byte) 0);
 
 
-
         InputStream in = null;
         try {
-            in = new FileInputStream("mazes/"+filename);
+            in = new FileInputStream("mazes/" + filename);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -173,84 +183,84 @@ public class Maze {
             ByteBuffer b;
 
 
-            in.read(buff,0,4);
+            in.read(buff, 0, 4);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             fileID = b.getInt();
             Arrays.fill(buff, (byte) 0);
 
-            in.read(buff,0,1);
+            in.read(buff, 0, 1);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             escape = b.getInt();
             Arrays.fill(buff, (byte) 0);
 
 
-            in.read(buff,0,2);
+            in.read(buff, 0, 2);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             columns = b.getInt();
             Arrays.fill(buff, (byte) 0);
 
-            in.read(buff,0,2);
+            in.read(buff, 0, 2);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             lines = b.getInt();
             Arrays.fill(buff, (byte) 0);
 
-            in.read(buff,0,2);
+            in.read(buff, 0, 2);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             entry_x = b.getInt();
             Arrays.fill(buff, (byte) 0);
 
-            in.read(buff,0,2);
+            in.read(buff, 0, 2);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             entry_y = b.getInt();
             Arrays.fill(buff, (byte) 0);
 
-            in.read(buff,0,2);
+            in.read(buff, 0, 2);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             exit_x = b.getInt();
             Arrays.fill(buff, (byte) 0);
 
-            in.read(buff,0,2);
+            in.read(buff, 0, 2);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             exit_y = b.getInt();
             Arrays.fill(buff, (byte) 0);
 
             //RESERVED (useless)
-            in.read(buff,0,12);
+            in.read(buff, 0, 12);
             Arrays.fill(buff, (byte) 0);
 
-            in.read(buff,0,4);
+            in.read(buff, 0, 4);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             counter = b.getInt();
             Arrays.fill(buff, (byte) 0);
 
-            in.read(buff,0,4);
+            in.read(buff, 0, 4);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             solOff = b.getInt();
             Arrays.fill(buff, (byte) 0);
 
-            in.read(buff,0,1);
+            in.read(buff, 0, 1);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             separator = b.getChar();
             Arrays.fill(buff, (byte) 0);
 
-            in.read(buff,0,1);
+            in.read(buff, 0, 1);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             wall = b.getChar();
             Arrays.fill(buff, (byte) 0);
 
-            in.read(buff,0,1);
+            in.read(buff, 0, 1);
             b = ByteBuffer.wrap(buff);
             b.order(ByteOrder.LITTLE_ENDIAN);
             path = b.getChar();
@@ -259,42 +269,115 @@ public class Maze {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        this.start_x = entry_x-1;
-        this.start_y = entry_y-1;
-        this.end_x = exit_x-1;
-        this.end_y = exit_y-1;
-        this.size_x = columns-1;
-        this.size_y = lines-1;
+        this.start_x = entry_x - 1;
+        this.start_y = entry_y - 1;
+        this.end_x = exit_x - 1;
+        this.end_y = exit_y - 1;
+        this.size_x = columns;
+        this.size_y = lines;
+        this.separator = separator;
+        this.counter = counter;
+        this.wall = wall;
+        this.path = path;
 
         System.out.println("\nBinary file parameters:\nFileID = " + Integer.toHexString(fileID) + "\nEscape = " + Integer.toHexString(escape) + "\nColumns = " + columns +
                 "\nLines = " + lines + "\nEntryX = " + entry_x + "\nEntryY = " + entry_y + "\nExitX = " + exit_x + "\nExitY = " + exit_y + "\nCounter = " + counter +
                 "\nSolutionOffset = " + solOff + "\nSeparator = " + separator + "\nWall = " + wall + "\nPath = " + path);
 
-
+        try {
+            in.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 
     }
 
+    /**
+     * Zczytuje labirynt z pliku binarnego do {@link Maze#mAr}
+     */
+    private void readB() {
 
+        InputStream in = null;
+        try {
+            in = new FileInputStream("mazes/" + filename);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        for (int i = 0; i < HEADER_SIZE; i++) {
+            try {
+                in.read();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        int sep;
+        char val, count;
+
+        int c = 0;
+        int cil = 0; //char in line
+
+        int x = 0;
+        int y = 0;
+
+        while (c < counter) {
+
+            try {
+                sep = in.read();
+                val = (char) in.read();
+                count = (char) in.read();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (val != path && val != wall)
+                break;
+
+            for (int i = 0; i <= count; i++) {
+
+                if (cil == size_x) {
+                    cil = 0;
+                    y++;
+                    x = 0;
+                }
+
+                mAr[y][x] = val;
+                x++;
+                cil++;
+
+            }
+
+            c++;
+        }
+
+        mAr[start_y][start_x] = 'P';
+        mAr[end_y][end_x] = 'K';
+
+        try {
+            in.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Inicjuje labirynt, rozpoznaje rozszerzenie pliku
      */
-    public void Init(){
+    public void Init() {
 
-        if(filename.endsWith(".bin")){
+        if (filename.endsWith(".bin")) {
             System.out.println("Working on binary file");
             getParamsB();
             mAr = new char[size_y][size_x];
-
-        }
-        else if(filename.endsWith(".txt")){
+            readB();
+        } else if (filename.endsWith(".txt")) {
             System.out.println("Working on text file");
             getSizeT();
             mAr = new char[size_y][size_x];
             readT();
-        }
-        else{
+        } else {
             System.out.println("File type not recognized");
             System.exit(2);
         }
@@ -302,17 +385,17 @@ public class Maze {
 
     }
 
-
     /**
      * Zwraca jako String zawartość tabeli {@link Maze#mAr}
+     *
      * @return String
      */
     @Override
-    public String toString(){
+    public String toString() {
         String output = "";
-        for(int i=0;i<size_y;i++){
+        for (int i = 0; i < size_y; i++) {
 
-            for(int j = 0; j < size_x; j++) {
+            for (int j = 0; j < size_x; j++) {
                 output += mAr[i][j];
             }
             output += '\n';
@@ -323,15 +406,51 @@ public class Maze {
 
     /**
      * Zwraca parametry labiryntu
+     *
      * @return void
      */
-    public String paramsToString(){
-        return "\nMaze parameters:\nx = "+size_x +"\ny = "+size_y + "\nstart_x = " + start_x + "\nstart_y = " + start_y + "\nend_x = " + end_x + "\nend_y = " + end_y;
+    public String paramsToString() {
+        return "\nMaze parameters:\nx = " + size_x + "\ny = " + size_y + "\nstart_x = " + start_x + "\nstart_y = " + start_y + "\nend_x = " + end_x + "\nend_y = " + end_y;
     }
 
+    /**
+     * wypisuje zawartość tablicy {@link Maze#mAr}
+     */
+    public void arrayToFile() {
+        File file;
+        FileWriter wr;
+        try {
+            file = new File("array_contents.txt");
+            if (file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
+            wr = new FileWriter(file);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e + " (Nie udało sie utworzyć pliku)");
+        }
 
 
+        for (int i = 0; i < size_y; i++) {
+            for (int j = 0; j < size_x; j++) {
+                try {
+                    wr.write(mAr[i][j]);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            try {
+                wr.write('\n');
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            wr.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-
-
+    }
 }
