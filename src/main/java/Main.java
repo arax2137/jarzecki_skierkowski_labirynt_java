@@ -4,12 +4,17 @@ public class Main {
 
         //TODO dodac pary
 
-        String filename = "maze.bin";
+        String filename = "maze_forks_5_5.txt";
 
         Maze maze = new Maze(filename);
-        maze.Init();
+        maze.mazeInit();
 
+        MazeGraph graph = new MazeGraph(maze);
         System.out.println(maze.paramsToString());
+        graph.graphInit();
+        System.out.println("\nNode count: " + graph.getNodeCount());
+        System.out.println(graph.nodesToString());
+
 
         //System.out.println(maze);
         //maze.arrayToFile();

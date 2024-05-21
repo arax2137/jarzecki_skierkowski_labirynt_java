@@ -343,7 +343,13 @@ public class Maze implements ClassConstants {
                     x = 0;
                 }
 
-                mAr[y][x] = val;
+                if(val == wall){
+                    mAr[y][x] = 'X';
+                }
+                else if(val == path){
+                    mAr[y][x] = ' ';
+                }
+
                 x++;
                 cil++;
 
@@ -365,7 +371,7 @@ public class Maze implements ClassConstants {
     /**
      * Inicjuje labirynt, rozpoznaje rozszerzenie pliku
      */
-    public void Init() {
+    public void mazeInit() {
 
         if (filename.endsWith(".bin")) {
             System.out.println("Working on binary file");
