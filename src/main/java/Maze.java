@@ -48,16 +48,42 @@ public class Maze implements ClassConstants {
         return size_y;
     }
 
-    public void setSize_x(int size_x) {
-        this.size_x = size_x;
-    }
-
-    public void setSize_y(int size_y) {
-        this.size_y = size_y;
-    }
-
+    /**
+     * zwraca zawartosc pola na wsporzednych podanych jako parametr
+     * @param y
+     * @param x
+     * @return
+     */
     public char getCell(int y, int x) {
         return mAr[y][x];
+    }
+
+    /**
+     * Zmienia start labiryntu na wspolrzedne podane jako parametr
+     * @param x
+     * @param y
+     */
+    public void swapStart(int x, int y){
+        if(mAr[start_y][start_x] == 'P'){
+            mAr[start_y][start_x] = 'X';
+        }
+        mAr[y][x] = 'P';
+        start_x = x;
+        start_y = y;
+    }
+
+    /**
+     * Zmienia koniec labiryntu na wspolrzedne podane jako parametr
+     * @param x
+     * @param y
+     */
+    public void swapEnd(int x, int y){
+        if(mAr[end_y][end_x] == 'K'){
+            mAr[end_y][end_x] = 'X';
+        }
+        mAr[y][x] = 'K';
+        end_x = x;
+        end_y = y;
     }
 
     public void setCell(int y, int x, char a) {
@@ -282,7 +308,7 @@ public class Maze implements ClassConstants {
 
         System.out.println("\nBinary file parameters:\nFileID = " + Integer.toHexString(fileID) + "\nEscape = " + Integer.toHexString(escape) + "\nColumns = " + columns +
                 "\nLines = " + lines + "\nEntryX = " + entry_x + "\nEntryY = " + entry_y + "\nExitX = " + exit_x + "\nExitY = " + exit_y + "\nCounter = " + counter +
-                "\nSolutionOffset = " + solOff + "\nSeparator = " + separator + "\nWall = " + wall + "\nPath = " + path);
+                "\nSolutionOffset = " + solOff + "\nSeparator = " + this.separator + "\nWall = " + wall + "\nPath = " + path);
 
         try {
             in.close();

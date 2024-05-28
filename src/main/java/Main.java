@@ -9,15 +9,15 @@ public class Main {
         Maze maze = new Maze(filename);
         maze.mazeInit();
 
-        MazeGraph graph = new MazeGraph(maze);
+        //MazeGraph graph = new MazeGraph(maze);
         System.out.println(maze.paramsToString());
-        graph.graphInit();
-        System.out.println("\nNode count: " + graph.getNodeCount());
-        System.out.println(graph.nodesToString());
+        //graph.graphInit();
+        //System.out.println("\nNode count: " + graph.getNodeCount());
+        //System.out.println(graph.nodesToString());
 
 
-        //System.out.println(maze);
-        //maze.arrayToFile();
+        System.out.println(maze);
+        maze.arrayToFile("test.txt");
         //System.out.println(maze.getCell(512,512));
 
 
