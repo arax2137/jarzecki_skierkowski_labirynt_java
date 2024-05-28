@@ -420,13 +420,13 @@ public class Maze implements ClassConstants {
     }
 
     /**
-     * wypisuje zawartość tablicy {@link Maze#mAr}
+     * wypisuje labirynt do pliku o nazwie podanej jako parametr
      */
-    public void arrayToFile() {
+    public void arrayToFile(String filename) {
         File file;
         FileWriter wr;
         try {
-            file = new File("array_contents.txt");
+            file = new File(filename);
             if (file.exists()) {
                 file.delete();
             }
