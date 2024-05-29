@@ -1,3 +1,4 @@
+import javax.swing.*;
 public class Main {
 
     public static void main(String[] args) {
@@ -20,6 +21,12 @@ public class Main {
         maze.arrayToFile("test.txt");
         //System.out.println(maze.getCell(512,512));
 
+        SwingUtilities.invokeLater(() -> {
+            GUI gui = new GUI();
+            gui.setVisible(true);
+        });
+
+    }
 
     }
 }
