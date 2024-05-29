@@ -1,9 +1,11 @@
+
 import java.util.HashMap;
 
 public class MazeGraph {
 
     HashMap<String, Node> graph;
     Maze m;
+
 
     public MazeGraph(Maze m){
         graph = new HashMap<>();
@@ -55,24 +57,25 @@ public class MazeGraph {
             for (int j = 1; j < m.getSize_x()-1; j++) {
 
                 if(m.getCell(i,j) == ' ') {
+                    boolean isNode = false;
 
                     //sprawdzam czy skrzyzowanie / slepa uliczka
                     int exits = 0;
-                    if (m.getCell(i - 1, j) == ' ') {
+                    if (m.getCell(i - 1, j) == ' ' || m.getCell(i - 1, j) == 'P' || m.getCell(i - 1, j) == 'K') {
                         exits++;
                     }
-                    if (m.getCell(i + 1, j) == ' ') {
+                    if (m.getCell(i + 1, j) == ' ' || m.getCell(i + 1, j) == 'P' || m.getCell(i + 1, j) == 'K') {
                         exits++;
                     }
-                    if (m.getCell(i, j - 1) == ' ') {
+                    if (m.getCell(i, j - 1) == ' ' || m.getCell(i, j - 1) == 'P' || m.getCell(i, j - 1) == 'K') {
                         exits++;
                     }
-                    if (m.getCell(i, j + 1) == ' ') {
+                    if (m.getCell(i, j + 1) == ' ' || m.getCell(i, j + 1) == 'P' || m.getCell(i, j + 1) == 'K') {
                         exits++;
                     }
 
                     if (exits != 2) {
-                        addNode(new Node(j, i));
+                        isNode = true;
                     }
 
                     //sprawdzam czy zakret
@@ -82,19 +85,88 @@ public class MazeGraph {
                                     (m.getCell(i + 1, j) == ' ' && m.getCell(i - 1, j) != ' ') ||
                                     (m.getCell(i - 1, j) == ' ' && m.getCell(i + 1, j) != ' ')
                     ) {
-                        addNode(new Node(j, i));
+                        isNode = true;
+                    }
+
+                    //tworzenie wezla i dodawania krawedzi
+                    if(isNode){
+                        Node n = new Node(j,i);
+
+                        int x = j - 1;
+                        int y = i - 1;
+
+                        while(m.getCell(i, x) != 'X' && x > 0){
+
+                            if(graph.containsKey(createLabel(x,i))){
+                                n.addEdge(new Edge(n, graph.get(createLabel(x,i))));
+                                graph.get(createLabel(x,i)).addEdge(new Edge(graph.get(createLabel(x,i)), n));
+                                break;
+                            }
+                            x--;
+                        }
+
+                        while(m.getCell(y, j) != 'X' && y > 0){
+                            if(graph.containsKey(createLabel(j, y))){
+                                n.addEdge(new Edge(n, graph.get(createLabel(j, y))));
+                                graph.get(createLabel(j, y)).addEdge(new Edge(graph.get(createLabel(j, y)), n));
+                                break;
+                            }
+                            y--;
+                        }
+                        addNode(n);
                     }
                 }
             }
 
         }
-        addNode(new Node(m.getStart_x(), m.getStart_y()));
-        addNode(new Node(m.getEnd_x(), m.getEnd_y()));
+
+        Node start = new Node(m.getStart_x(), m.getStart_y());
+        if(m.getStart_x() == 0){
+            start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x()+1, m.getStart_y()))));
+            graph.get(createLabel(m.getStart_x()+1, m.getStart_y())).addEdge(new Edge(graph.get(createLabel(m.getStart_x()+1, m.getStart_y())), start ));
+        }
+        if(m.getStart_x() == m.getSize_x()-1){
+            start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x()-1, m.getStart_y()))));
+            graph.get(createLabel(m.getStart_x()-1, m.getStart_y())).addEdge(new Edge( graph.get(createLabel(m.getStart_x()-1, m.getStart_y())), start ));
+        }
+        if(m.getStart_y() == 0){
+            start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x(), m.getStart_y()+1))));
+            graph.get(createLabel(m.getStart_x(), m.getStart_y()+1)).addEdge(new Edge(graph.get(createLabel(m.getStart_x(), m.getStart_y()+1)), start));
+        }
+        if(m.getStart_y() == m.getSize_y()-1){
+            start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x(), m.getStart_y()-1))));
+            graph.get(createLabel(m.getStart_x(), m.getStart_y()-1)).addEdge(new Edge(graph.get(createLabel(m.getStart_x(), m.getStart_y()-1)), start));
+        }
+        addNode(start);
 
 
 
 
+        Node end = new Node(m.getEnd_x(), m.getEnd_y());
+        if(m.getEnd_x() == 0){
+            end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x()+1, m.getEnd_y()))));
+            graph.get(createLabel(m.getEnd_x()+1, m.getEnd_y())).addEdge(new Edge(graph.get(createLabel(m.getEnd_x()+1, m.getEnd_y())), end ));
+        }
+        if(m.getEnd_x() == m.getSize_x()-1){
+            end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x()-1, m.getEnd_y()))));
+            graph.get(createLabel(m.getEnd_x()-1, m.getEnd_y())).addEdge(new Edge( graph.get(createLabel(m.getEnd_x()-1, m.getEnd_y())), end ));
+        }
+        if(m.getEnd_y() == 0){
+            end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x(), m.getEnd_y()+1))));
+            graph.get(createLabel(m.getEnd_x(), m.getEnd_y()+1)).addEdge(new Edge(graph.get(createLabel(m.getEnd_x(), m.getEnd_y()+1)), end));
+        }
+        if(m.getEnd_y() == m.getSize_y()-1){
+            end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x(), m.getEnd_y()-1))));
+            graph.get(createLabel(m.getEnd_x(), m.getEnd_y()-1)).addEdge(new Edge(graph.get(createLabel(m.getEnd_x(), m.getEnd_y()-1)), end));
+        }
+        addNode(end);
 
+
+
+    }
+
+    private String createLabel(int x, int y){
+        return Integer.toString(x) + "-" + Integer.toString(y);
     }
 
 }

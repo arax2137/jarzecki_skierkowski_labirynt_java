@@ -401,16 +401,19 @@ public class Maze implements ClassConstants {
 
         if (filename.endsWith(".bin")) {
             System.out.println("Working on binary file");
+            System.out.println("Filename: " + filename);
             getParamsB();
             mAr = new char[size_y][size_x];
             readB();
         } else if (filename.endsWith(".txt")) {
             System.out.println("Working on text file");
+            System.out.println("Filename: " + filename);
             getSizeT();
             mAr = new char[size_y][size_x];
             readT();
         } else {
             System.out.println("File type not recognized");
+            System.out.println("Filename: " + filename);
             System.exit(2);
         }
 
