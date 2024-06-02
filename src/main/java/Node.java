@@ -6,7 +6,7 @@ public class Node {
     String label;
     private int x;
     private int y;
-    private ArrayList<Edge> edges;
+    public ArrayList<Edge> edges;
 
     public Node(int x, int y) {
         this.x = x;

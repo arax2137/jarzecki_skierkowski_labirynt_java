@@ -1,10 +1,15 @@
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class MazeGraph {
 
     HashMap<String, Node> graph;
     Maze m;
+    HashMap<Node, Integer> distance;
+    HashMap<Node, Node> previous;
 
 
     public MazeGraph(Maze m){
@@ -34,6 +39,9 @@ public class MazeGraph {
         return output;
     }
 
+    /**
+     * inicjuje graf - tworzy wierzcholki i dodaje do niech krawedzie
+     */
     public void graphInit(){
 
         /*
@@ -165,8 +173,78 @@ public class MazeGraph {
 
     }
 
+    public void dijsktra(){
+
+        System.out.println("Solving maze:");
+
+        distance = new HashMap<>(); // 999999 = inf, poczatkowa odleglosc
+        previous = new HashMap<>();
+        PriorityQueue<Node> q = new PriorityQueue<>(new NodeComparator());
+
+
+
+        for(Node n : graph.values()){
+            distance.put(n, 999999);
+            previous.put(n, null);
+            q.offer(n);
+        }
+
+        Node start = graph.get(new Node(m.getStart_x(),m.getStart_y()).label);
+        distance.replace(start, 0);
+        q.remove(start);
+        q.offer(start);
+
+        Node end = graph.get(new Node(m.getEnd_x(), m.getEnd_y()).label);
+
+
+
+        while(!q.isEmpty()){
+            Node n1 = q.poll();
+            //System.out.println();
+            //System.out.println("Extracted node: " + n1 + ", distance = " + distance.get(n1) + ", neighbour count: " + n1.edges.size());
+
+            if(n1.equals(end)){
+                System.out.println("Exit found, distance: " + distance.get(n1));
+                return;
+            }
+
+
+            for(Edge e : n1.edges){
+                Node n2 = e.getDestination();
+                //System.out.println("Analyzing neighbour " + n2);
+                int altDist = distance.get(n1) + e.getDistance();
+                if(altDist < distance.get(n2)){
+                    previous.replace(n2, n1);
+                    distance.replace(n2, altDist);
+                    //System.out.println("New distance found: " + distance.get(n2));
+                    q.remove(n2);
+                    q.offer(n2);
+                }
+
+            }
+
+        }
+
+
+    }
+
     private String createLabel(int x, int y){
         return Integer.toString(x) + "-" + Integer.toString(y);
+    }
+
+
+    public class NodeComparator implements Comparator<Node> {
+
+        @Override
+        public int compare(Node o1, Node o2) {
+            if(distance.get(o1) < distance.get(o2)){
+                return -1;
+            }
+            else if(distance.get(o1) > distance.get(o2)){
+                return 1;
+            }
+            return 0;
+        }
     }
 
 }
