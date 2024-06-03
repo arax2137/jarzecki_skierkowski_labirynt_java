@@ -1,8 +1,5 @@
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class MazeGraph {
 
@@ -173,6 +170,9 @@ public class MazeGraph {
 
     }
 
+    /**
+     * rozwiazuje labirynt, wstawia kropki na sciezce
+     */
     public void dijsktra(){
 
         System.out.println("Solving maze:");
@@ -205,7 +205,7 @@ public class MazeGraph {
 
             if(n1.equals(end)){
                 System.out.println("Exit found, distance: " + distance.get(n1));
-                return;
+                break;
             }
 
 
@@ -225,6 +225,20 @@ public class MazeGraph {
 
         }
 
+        System.out.println("Reading path: ");
+        Stack<Node> s = new Stack<>();
+        Node n;
+
+        n = end;
+        s.push(n);
+
+        while(n!=start){
+            m.putDots(n, previous.get(n));
+            n = previous.get(n);
+        }
+
+
+
 
     }
 
@@ -232,7 +246,9 @@ public class MazeGraph {
         return Integer.toString(x) + "-" + Integer.toString(y);
     }
 
-
+    /**
+     * porownuje wezly na bazie ich odleglosci od startu
+     */
     public class NodeComparator implements Comparator<Node> {
 
         @Override

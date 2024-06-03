@@ -91,6 +91,40 @@ public class Maze implements ClassConstants {
     }
 
     /**
+     * wstawia kropki miedzy dwoma podanymi wezlami
+     * @param n1
+     * @param n2
+     */
+    public void putDots(Node n1, Node n2){
+        if(n1.getX()<n2.getX()){
+            for(int i=n1.getX(); i<=n2.getX();i++){
+                mAr[n1.getY()][i] = '.';
+            }
+        }
+        if(n1.getX()>n2.getX()){
+            for(int i=n2.getX(); i<=n1.getX();i++){
+                mAr[n1.getY()][i] = '.';
+            }
+
+        }
+        if(n1.getY()<n2.getY()){
+            for(int i=n1.getY(); i<=n2.getY();i++){
+                mAr[i][n1.getX()] = '.';
+            }
+
+        }
+        if(n1.getY()>n2.getY()){
+            for(int i=n2.getY(); i<=n1.getY();i++){
+                mAr[i][n1.getX()] = '.';
+            }
+        }
+
+
+
+
+    }
+
+    /**
      * Przypisuje polom {@link Maze#size_x} i {@link Maze#size_y} odpowiednie wartości podczas czytania z pliku
      */
     private void getSizeT() {

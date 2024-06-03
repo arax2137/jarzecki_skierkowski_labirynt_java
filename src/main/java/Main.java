@@ -3,7 +3,7 @@ public class Main {
     public static void main(String[] args) {
 
         //TODO STWORZYC OGRANICZENIA PODCZAS WYBIERANIA PUNKTOW STARTU KONCA
-        String filename = "maze_cycles_1024_1024.txt";
+        String filename = "maze50.txt";
 
         Maze maze = new Maze(filename);
         maze.mazeInit();
@@ -18,7 +18,7 @@ public class Main {
         graph.dijsktra();
 
 
-       // System.out.println(maze);
+        System.out.println(maze);
         //maze.arrayToFile("test.txt");
 
 
