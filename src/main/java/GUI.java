@@ -1,15 +1,23 @@
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 
 public class GUI extends JFrame {
     private JPanel rysowanie;
-    private Maze m;
+    public Maze m;
     private String filename;
     private int wielkosc_komorki = 10;
+    private int new_start_x;
+    private int new_start_y;
+    private int new_end_x;
+    private int new_end_y;
+
+    private boolean npp=false;//punkt poczatkowy
+    private boolean npk=false;//punkt koncowy
 
     public GUI() {
         setTitle("Labirynt");
@@ -32,6 +40,11 @@ public class GUI extends JFrame {
                     m= new Maze(filename);
                     System.out.println(filename);
                     m.mazeInit();
+                    new_end_x=m.getEnd_x();
+                    new_end_y=m.getEnd_y();
+                    new_start_x=m.getStart_x();
+                    new_start_y=m.getStart_y();
+                    wielkosc_komorki=10;
                     rysowanie.repaint();
                 }
             }
@@ -53,15 +66,26 @@ public class GUI extends JFrame {
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent pp) {
-                // Tutaj możesz dodać logikę ustawiania nowego punktu początkowego
+                m= new Maze(filename);
+                System.out.println(filename);
+                m.mazeInit();
+                m.swapStart(new_start_x, new_start_y);
+                m.swapEnd(new_end_x, new_end_y);
+                repaint();
+                npp=true;
             }
         });
 
         JMenuItem stop = new JMenuItem("Nowy punkt końcowy");
         stop.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent pk) {
-                // Tutaj możesz dodać logikę ustawiania nowego punktu końcowego
+            public void actionPerformed(ActionEvent pk) {m= new Maze(filename);
+                System.out.println(filename);
+                m.mazeInit();
+                m.swapStart(new_start_x, new_start_y);
+                m.swapEnd(new_end_x, new_end_y);
+                repaint();
+                npk=true;
             }
         });
 
@@ -81,6 +105,8 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent gs) {
                 suwak_grubosci_sciany();
+                if(wielkosc_komorki==0)
+                    wielkosc_komorki = 1;
                 rysowanie.repaint();
             }
         });
@@ -112,6 +138,8 @@ public class GUI extends JFrame {
                                 g.setColor(Color.GREEN);
                             } else if (m.getCell(i, j) == '.'){
                                 g.setColor(Color.RED);
+                            }else if (m.getCell(i, j) == 'A'){
+                                g.setColor(Color.GRAY);
                             } else {
                                 g.setColor(Color.WHITE);
                             }
@@ -121,11 +149,43 @@ public class GUI extends JFrame {
                 }
             }
         };
+        rysowanie.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if(npp){
+                    Point p = e.getPoint();
+                    int x = p.x / wielkosc_komorki;
+                    int y = p.y / wielkosc_komorki;
+
+                    if(m!=null && m.getCell(x,y)=='X'&&czy_obramowka(x,y)){
+                        m.swapStart(x,y);
+                        new_start_x=x;
+                        new_start_y=y;
+                        repaint();
+                        npp=false;
+                    }
+                }
+                if(npk){
+                    Point p = e.getPoint();
+                    int x = p.x / wielkosc_komorki;
+                    int y = p.y / wielkosc_komorki;
+                    if(m!=null && m.getCell(x,y)=='X'&&czy_obramowka(x,y)){
+                        m.swapEnd(x,y);
+                        new_end_x=x;
+                        new_end_y=y;
+                        repaint();
+                        npk=false;
+                    }
+                }
+            }
+        });
+
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(rysowanie, BorderLayout.CENTER);
         add(mainPanel);
         setLocationRelativeTo(null);
+
     }
     private void suwak_grubosci_sciany(){
         JDialog suwak_okno = new JDialog((Frame) null,"Ustaw gróbość ściany",true);
@@ -133,7 +193,7 @@ public class GUI extends JFrame {
         suwak_okno.setSize(300,150);
         suwak_okno.setLayout(new BorderLayout());
 
-        JSlider suwak =new JSlider(5,30,10);
+        JSlider suwak =new JSlider(0,30,10);
         suwak.setMajorTickSpacing(5);
         suwak.setPaintLabels(true);
         suwak.setPaintTicks(true);
@@ -164,4 +224,16 @@ public class GUI extends JFrame {
         suwak_okno.setVisible(true);
 
     }
+
+    private boolean czy_obramowka(int x, int y){
+        if((x==0 && y==0) || (x==0 && y==m.getSize_y()-1) || (x==m.getSize_x()-1 && y==0) || (x==m.getSize_x()-1 && y==m.getSize_y()-1)){
+            return false;
+        }
+        if(x==0&&y!=0 || y==0&&x!=0 || x==m.getSize_x()-1 ||y==m.getSize_y()-1){
+        return true;
+        }
+        return false;
+
+    }
+
 }
