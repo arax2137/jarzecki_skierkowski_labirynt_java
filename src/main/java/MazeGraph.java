@@ -57,6 +57,11 @@ public class MazeGraph {
         jeżeli napotkam węzeł to dodaje go jako sąsiada, i do znalezionego węzła dodaje pierwotny węzeł jako sąsiada
          */
 
+        if(m.getStart_x() == m.getEnd_x() && m.getStart_y() == m.getEnd_y()){
+            System.err.println("Ustawiono punkty startowe i końcowe na sobie");
+            System.exit(1);
+        }
+
 
         for(int i = 1; i < m.getSize_y()-1; i++) {
             for (int j = 1; j < m.getSize_x()-1; j++) {

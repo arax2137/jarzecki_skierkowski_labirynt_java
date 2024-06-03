@@ -64,6 +64,10 @@ public class Maze implements ClassConstants {
      * @param y
      */
     public void swapStart(int x, int y){
+        if((x==0 && y==0) || (x==0 && y==size_y-1) || (x==size_x-1 && y==0) || (x==size_x-1 && y==size_y-1)){
+            System.err.println("Nie można ustawić punktu na rogu");
+            return;
+        }
         if(mAr[start_y][start_x] == 'P'){
             mAr[start_y][start_x] = 'X';
         }
@@ -78,6 +82,13 @@ public class Maze implements ClassConstants {
      * @param y
      */
     public void swapEnd(int x, int y){
+
+        if((x==0 && y==0) || (x==0 && y==size_y-1) || (x==size_x-1 && y==0) || (x==size_x-1 && y==size_y-1)){
+            System.err.println("Nie można ustawić punktu na rogu");
+            return;
+        }
+
+
         if(mAr[end_y][end_x] == 'K'){
             mAr[end_y][end_x] = 'X';
         }
