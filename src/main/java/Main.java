@@ -1,4 +1,5 @@
 import java.io.File;
+import javax.swing.*;
 
 public class Main {
 
@@ -19,9 +20,13 @@ public class Main {
         graph.dijsktra();
 
 
-        //System.out.println(maze);
+        System.out.println(maze);
         //maze.arrayToFile("test.txt");
 
+        SwingUtilities.invokeLater(() -> {
+            GUI gui = new GUI();
+            gui.setVisible(true);
+        });
 
 
     }

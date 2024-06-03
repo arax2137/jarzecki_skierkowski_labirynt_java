@@ -3,6 +3,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Maze implements ClassConstants {
 
@@ -497,10 +500,15 @@ public class Maze implements ClassConstants {
      * wypisuje labirynt do pliku o nazwie podanej jako parametr
      */
     public void arrayToFile(String filename) {
-        File file;
+
+        File file = new File("solutions","rozwiazanie_"+filename);
         FileWriter wr;
+
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+
         try {
-            file = new File(filename);
             if (file.exists()) {
                 file.delete();
             }

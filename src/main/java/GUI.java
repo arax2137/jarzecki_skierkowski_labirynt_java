@@ -1,13 +1,15 @@
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
 public class GUI extends JFrame {
-    private JPanel drawPanel;
-    public Maze m;
+    private JPanel rysowanie;
+    private Maze m;
     private String filename;
+    private int wielkosc_komorki = 10;
 
     public GUI() {
         setTitle("Labirynt");
@@ -21,16 +23,16 @@ public class GUI extends JFrame {
         JMenuItem open = new JMenuItem("Otwórz");
         open.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser("mazes");
-                int returnValue = fileChooser.showOpenDialog(null);
+            public void actionPerformed(ActionEvent o) {
+                JFileChooser wybor_pliku = new JFileChooser("mazes");
+                int returnValue = wybor_pliku.showOpenDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
+                    File selectedFile = wybor_pliku.getSelectedFile();
                     filename = selectedFile.getName();
                     m= new Maze(filename);
                     System.out.println(filename);
                     m.mazeInit();
-                    drawPanel.repaint();
+                    rysowanie.repaint();
                 }
             }
         });
@@ -38,10 +40,10 @@ public class GUI extends JFrame {
         JMenuItem save = new JMenuItem("Zapisz");
         save.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if (filename != null && m != null) {
-                    saveMazeToFile();
-                }
+            public void actionPerformed(ActionEvent z) {
+                    if (filename != null && m != null) {
+                        m.arrayToFile(filename);
+                    }
             }
         });
 
@@ -50,7 +52,7 @@ public class GUI extends JFrame {
         JMenuItem start = new JMenuItem("Nowy punkt początkowy");
         start.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent pp) {
                 // Tutaj możesz dodać logikę ustawiania nowego punktu początkowego
             }
         });
@@ -58,7 +60,7 @@ public class GUI extends JFrame {
         JMenuItem stop = new JMenuItem("Nowy punkt końcowy");
         stop.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent pk) {
                 // Tutaj możesz dodać logikę ustawiania nowego punktu końcowego
             }
         });
@@ -66,8 +68,20 @@ public class GUI extends JFrame {
         JMenuItem findPath = new JMenuItem("Znajdź ścieżkę");
         findPath.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                // Tutaj możesz dodać logikę wyszukiwania ścieżki
+            public void actionPerformed(ActionEvent s) {
+                MazeGraph graph = new MazeGraph(m);
+                graph.graphInit();
+                graph.dijsktra();
+                rysowanie.repaint();
+            }
+        });
+
+        JMenuItem changeSize = new JMenuItem("Grubość sciany");
+        changeSize.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent gs) {
+                suwak_grubosci_sciany();
+                rysowanie.repaint();
             }
         });
 
@@ -76,17 +90,17 @@ public class GUI extends JFrame {
         toolMenu.add(findPath);
         toolMenu.add(start);
         toolMenu.add(stop);
+        toolMenu.add(changeSize);
         menuBar.add(fileMenu);
         menuBar.add(toolMenu);
 
         setJMenuBar(menuBar);
 
-        drawPanel = new JPanel() {
+        rysowanie = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 if (m != null) {
-                    int wielkosc_komorki = 10;
 
                     for (int i = 0; i < m.getSize_y(); i++) {
                         for (int j = 0; j < m.getSize_x(); j++) {
@@ -95,6 +109,8 @@ public class GUI extends JFrame {
                             } else if (m.getCell(i, j) == 'P') {
                                 g.setColor(Color.GREEN);
                             } else if (m.getCell(i, j) == 'K') {
+                                g.setColor(Color.GREEN);
+                            } else if (m.getCell(i, j) == '.'){
                                 g.setColor(Color.RED);
                             } else {
                                 g.setColor(Color.WHITE);
@@ -107,35 +123,45 @@ public class GUI extends JFrame {
         };
 
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(drawPanel, BorderLayout.CENTER);
-
+        mainPanel.add(rysowanie, BorderLayout.CENTER);
         add(mainPanel);
+        setLocationRelativeTo(null);
     }
+    private void suwak_grubosci_sciany(){
+        JDialog suwak_okno = new JDialog((Frame) null,"Ustaw gróbość ściany",true);
 
-    private void saveMazeToFile() {
-        // Implementacja zapisu labiryntu do pliku
-        JFileChooser fileChooser = new JFileChooser();
-        int returnValue = fileChooser.showSaveDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            m.arrayToFile(filename);
-        }
-    }
+        suwak_okno.setSize(300,150);
+        suwak_okno.setLayout(new BorderLayout());
 
-    private class Maze {
+        JSlider suwak =new JSlider(5,30,10);
+        suwak.setMajorTickSpacing(5);
+        suwak.setPaintLabels(true);
+        suwak.setPaintTicks(true);
 
-        public Maze(String mazeData) {
-            String[] rows = mazeData.split("\n");
-            m.size_y = rows.length;
-            m.size_x = rows[0].trim().length();
-            m.mAr = new char[m.size_y][m.size_x];
-            for (int i = 0; i < maze.size_y; i++) {
-                String row = rows[i].trim();
-                for (int j = 0; j < m.size_x; j++) {
-                    m.mAr[i][j] = row.charAt(j);
-                }
+        JLabel wartosc = new JLabel("Grubość ściany "+suwak.getValue());
+
+        suwak.addChangeListener(e -> wartosc.setText("Grubość ściany "+suwak.getValue()));
+
+        JPanel panel_suwaka = new JPanel();
+        panel_suwaka.add(suwak);
+        suwak_okno.add(wartosc, BorderLayout.NORTH);
+        suwak_okno.add(panel_suwaka, BorderLayout.CENTER);
+
+        JButton suwak_zapisz = new JButton("Zapisz");
+        suwak_zapisz.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                wielkosc_komorki=suwak.getValue();
+                suwak_okno.dispose();
             }
-        }
+        });
+
+        JPanel panel_suwaka_zapisz = new JPanel();
+        panel_suwaka_zapisz.add(suwak_zapisz);
+        suwak_okno.add(panel_suwaka_zapisz, BorderLayout.SOUTH);
+
+        suwak_okno.setLocationRelativeTo(null);
+        suwak_okno.setVisible(true);
 
     }
 }
