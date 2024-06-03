@@ -138,8 +138,6 @@ public class GUI extends JFrame {
                                 g.setColor(Color.GREEN);
                             } else if (m.getCell(i, j) == '.'){
                                 g.setColor(Color.RED);
-                            }else if (m.getCell(i, j) == 'A'){
-                                g.setColor(Color.GRAY);
                             } else {
                                 g.setColor(Color.WHITE);
                             }
