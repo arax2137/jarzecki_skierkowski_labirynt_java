@@ -171,6 +171,7 @@ public class MazeGraph {
         }
         addNode(end);
 
+        System.out.println("\nNode count: " + getNodeCount());
 
 
     }

@@ -38,7 +38,6 @@ public class GUI extends JFrame {
                     File selectedFile = wybor_pliku.getSelectedFile();
                     filename = selectedFile.getName();
                     m= new Maze(filename);
-                    System.out.println(filename);
                     m.mazeInit();
                     new_end_x=m.getEnd_x();
                     new_end_y=m.getEnd_y();
@@ -67,7 +66,6 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent pp) {
                 m= new Maze(filename);
-                System.out.println(filename);
                 m.mazeInit();
                 m.swapStart(new_start_x, new_start_y);
                 m.swapEnd(new_end_x, new_end_y);
@@ -80,7 +78,6 @@ public class GUI extends JFrame {
         stop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent pk) {m= new Maze(filename);
-                System.out.println(filename);
                 m.mazeInit();
                 m.swapStart(new_start_x, new_start_y);
                 m.swapEnd(new_end_x, new_end_y);
@@ -186,7 +183,7 @@ public class GUI extends JFrame {
 
     }
     private void suwak_grubosci_sciany(){
-        JDialog suwak_okno = new JDialog((Frame) null,"Ustaw gróbość ściany",true);
+        JDialog suwak_okno = new JDialog((Frame) null,"Ustaw grubość ściany",true);
 
         suwak_okno.setSize(300,150);
         suwak_okno.setLayout(new BorderLayout());

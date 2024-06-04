@@ -77,6 +77,9 @@ public class Maze implements ClassConstants {
         mAr[y][x] = 'P';
         start_x = x;
         start_y = y;
+
+        //System.out.println("New start_x = " + start_x);
+        //System.out.println("New start_x = " + start_y);
     }
 
     /**
@@ -98,6 +101,8 @@ public class Maze implements ClassConstants {
         mAr[y][x] = 'K';
         end_x = x;
         end_y = y;
+        //System.out.println("New end_x = " + end_x);
+        //System.out.println("New end_y = " + end_y);
     }
 
     public void setCell(int y, int x, char a) {
@@ -464,6 +469,9 @@ public class Maze implements ClassConstants {
             System.out.println("Filename: " + filename);
             System.exit(2);
         }
+
+        System.out.println(paramsToString());
+
 
 
     }
