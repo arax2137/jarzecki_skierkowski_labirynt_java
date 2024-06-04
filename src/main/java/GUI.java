@@ -24,6 +24,9 @@ public class GUI extends JFrame {
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
+
+
         JMenuBar menuBar = new JMenuBar();
 
         JMenu fileMenu = new JMenu("Menu");
@@ -44,6 +47,8 @@ public class GUI extends JFrame {
                     new_start_x=m.getStart_x();
                     new_start_y=m.getStart_y();
                     wielkosc_komorki=10;
+                    rysowanie.setPreferredSize(new Dimension(m.getSize_x() * wielkosc_komorki, m.getSize_y() * wielkosc_komorki));
+                    rysowanie.revalidate();
                     rysowanie.repaint();
                 }
             }
@@ -90,10 +95,12 @@ public class GUI extends JFrame {
         findPath.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent s) {
-                MazeGraph graph = new MazeGraph(m);
-                graph.graphInit();
-                graph.dijsktra();
-                rysowanie.repaint();
+                if(m!=null) {
+                    MazeGraph graph = new MazeGraph(m);
+                    graph.graphInit();
+                    graph.dijsktra();
+                    rysowanie.repaint();
+                }
             }
         });
 
@@ -174,10 +181,10 @@ public class GUI extends JFrame {
                 }
             }
         });
-
+        JScrollPane sp = new JScrollPane(rysowanie);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(rysowanie, BorderLayout.CENTER);
+        mainPanel.add(sp, BorderLayout.CENTER);
         add(mainPanel);
         setLocationRelativeTo(null);
 
