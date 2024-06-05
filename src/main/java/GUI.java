@@ -10,6 +10,7 @@ public class GUI extends JFrame {
     private JPanel rysowanie;
     public Maze m;
     private String filename;
+    private String filename2;
     private int wielkosc_komorki = 10;
     private int new_start_x;
     private int new_start_y;
@@ -39,7 +40,8 @@ public class GUI extends JFrame {
                 int returnValue = wybor_pliku.showOpenDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = wybor_pliku.getSelectedFile();
-                    filename = selectedFile.getName();
+                    filename = selectedFile.getAbsolutePath();
+                    filename2 = selectedFile.getName();
                     m= new Maze(filename);
                     m.mazeInit();
                     new_end_x=m.getEnd_x();
@@ -58,8 +60,8 @@ public class GUI extends JFrame {
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent z) {
-                    if (filename != null && m != null) {
-                        m.arrayToFile(filename);
+                    if (filename2 != null && m != null) {
+                        m.arrayToFile(filename2);
                     }
             }
         });

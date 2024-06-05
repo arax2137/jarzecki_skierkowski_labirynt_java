@@ -149,7 +149,7 @@ public class Maze implements ClassConstants {
     private void getSizeT() {
         File f = null;
         try {
-            f = new File("mazes/" + filename);
+            f = new File( filename);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -186,7 +186,7 @@ public class Maze implements ClassConstants {
     private void readT() {
         File f = null;
         try {
-            f = new File("mazes/" + filename);
+            f = new File( filename);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -253,7 +253,7 @@ public class Maze implements ClassConstants {
 
         InputStream in = null;
         try {
-            in = new FileInputStream("mazes/" + filename);
+            in = new FileInputStream( filename);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -379,7 +379,7 @@ public class Maze implements ClassConstants {
 
         InputStream in = null;
         try {
-            in = new FileInputStream("mazes/" + filename);
+            in = new FileInputStream( filename);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
