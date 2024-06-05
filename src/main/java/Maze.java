@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class Maze implements ClassConstants {
 
-    private String filename;
+    private String filepath;
     private int size_x;
     private int size_y;
     private int start_x;
@@ -24,7 +24,7 @@ public class Maze implements ClassConstants {
     private char separator;
 
     public Maze(String name) {
-        this.filename = name;
+        this.filepath = name;
     }
 
     public int getStart_x() {
@@ -149,7 +149,7 @@ public class Maze implements ClassConstants {
     private void getSizeT() {
         File f = null;
         try {
-            f = new File( filename);
+            f = new File(filepath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -186,7 +186,7 @@ public class Maze implements ClassConstants {
     private void readT() {
         File f = null;
         try {
-            f = new File( filename);
+            f = new File(filepath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -253,7 +253,7 @@ public class Maze implements ClassConstants {
 
         InputStream in = null;
         try {
-            in = new FileInputStream( filename);
+            in = new FileInputStream(filepath);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -379,7 +379,7 @@ public class Maze implements ClassConstants {
 
         InputStream in = null;
         try {
-            in = new FileInputStream( filename);
+            in = new FileInputStream(filepath);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -452,21 +452,21 @@ public class Maze implements ClassConstants {
      */
     public void mazeInit() {
 
-        if (filename.endsWith(".bin")) {
+        if (filepath.endsWith(".bin")) {
             System.out.println("Working on binary file");
-            System.out.println("Filename: " + filename);
+            System.out.println("Filename: " + filepath);
             getParamsB();
             mAr = new char[size_y][size_x];
             readB();
-        } else if (filename.endsWith(".txt")) {
+        } else if (filepath.endsWith(".txt")) {
             System.out.println("Working on text file");
-            System.out.println("Filename: " + filename);
+            System.out.println("Filename: " + filepath);
             getSizeT();
             mAr = new char[size_y][size_x];
             readT();
         } else {
             System.out.println("File type not recognized");
-            System.out.println("Filename: " + filename);
+            System.out.println("Filename: " + filepath);
             System.exit(2);
         }
 

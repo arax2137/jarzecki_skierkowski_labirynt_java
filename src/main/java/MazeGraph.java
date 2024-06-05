@@ -130,46 +130,49 @@ public class MazeGraph {
 
         }
 
-        Node start = new Node(m.getStart_x(), m.getStart_y());
-        if(m.getStart_x() == 0){
-            start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x()+1, m.getStart_y()))));
-            graph.get(createLabel(m.getStart_x()+1, m.getStart_y())).addEdge(new Edge(graph.get(createLabel(m.getStart_x()+1, m.getStart_y())), start ));
-        }
-        if(m.getStart_x() == m.getSize_x()-1){
-            start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x()-1, m.getStart_y()))));
-            graph.get(createLabel(m.getStart_x()-1, m.getStart_y())).addEdge(new Edge( graph.get(createLabel(m.getStart_x()-1, m.getStart_y())), start ));
-        }
-        if(m.getStart_y() == 0){
-            start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x(), m.getStart_y()+1))));
-            graph.get(createLabel(m.getStart_x(), m.getStart_y()+1)).addEdge(new Edge(graph.get(createLabel(m.getStart_x(), m.getStart_y()+1)), start));
-        }
-        if(m.getStart_y() == m.getSize_y()-1){
-            start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x(), m.getStart_y()-1))));
-            graph.get(createLabel(m.getStart_x(), m.getStart_y()-1)).addEdge(new Edge(graph.get(createLabel(m.getStart_x(), m.getStart_y()-1)), start));
-        }
-        addNode(start);
+
+        try {
+            Node start = new Node(m.getStart_x(), m.getStart_y());
+            if(m.getStart_x() == 0){
+                start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x()+1, m.getStart_y()))));
+                graph.get(createLabel(m.getStart_x()+1, m.getStart_y())).addEdge(new Edge(graph.get(createLabel(m.getStart_x()+1, m.getStart_y())), start ));
+            }
+            if(m.getStart_x() == m.getSize_x()-1){
+                start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x()-1, m.getStart_y()))));
+                graph.get(createLabel(m.getStart_x()-1, m.getStart_y())).addEdge(new Edge( graph.get(createLabel(m.getStart_x()-1, m.getStart_y())), start ));
+            }
+            if(m.getStart_y() == 0){
+                start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x(), m.getStart_y()+1))));
+                graph.get(createLabel(m.getStart_x(), m.getStart_y()+1)).addEdge(new Edge(graph.get(createLabel(m.getStart_x(), m.getStart_y()+1)), start));
+            }
+            if(m.getStart_y() == m.getSize_y()-1){
+                start.addEdge(new Edge(start, graph.get(createLabel(m.getStart_x(), m.getStart_y()-1))));
+                graph.get(createLabel(m.getStart_x(), m.getStart_y()-1)).addEdge(new Edge(graph.get(createLabel(m.getStart_x(), m.getStart_y()-1)), start));
+            }
+            addNode(start);
 
 
-
-
-        Node end = new Node(m.getEnd_x(), m.getEnd_y());
-        if(m.getEnd_x() == 0){
-            end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x()+1, m.getEnd_y()))));
-            graph.get(createLabel(m.getEnd_x()+1, m.getEnd_y())).addEdge(new Edge(graph.get(createLabel(m.getEnd_x()+1, m.getEnd_y())), end ));
+            Node end = new Node(m.getEnd_x(), m.getEnd_y());
+            if(m.getEnd_x() == 0){
+                end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x()+1, m.getEnd_y()))));
+                graph.get(createLabel(m.getEnd_x()+1, m.getEnd_y())).addEdge(new Edge(graph.get(createLabel(m.getEnd_x()+1, m.getEnd_y())), end ));
+            }
+            if(m.getEnd_x() == m.getSize_x()-1){
+                end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x()-1, m.getEnd_y()))));
+                graph.get(createLabel(m.getEnd_x()-1, m.getEnd_y())).addEdge(new Edge( graph.get(createLabel(m.getEnd_x()-1, m.getEnd_y())), end ));
+            }
+            if(m.getEnd_y() == 0){
+                end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x(), m.getEnd_y()+1))));
+                graph.get(createLabel(m.getEnd_x(), m.getEnd_y()+1)).addEdge(new Edge(graph.get(createLabel(m.getEnd_x(), m.getEnd_y()+1)), end));
+            }
+            if(m.getEnd_y() == m.getSize_y()-1){
+                end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x(), m.getEnd_y()-1))));
+                graph.get(createLabel(m.getEnd_x(), m.getEnd_y()-1)).addEdge(new Edge(graph.get(createLabel(m.getEnd_x(), m.getEnd_y()-1)), end));
+            }
+            addNode(end);
+        } catch (NullPointerException e) {
+            throw new RuntimeException("Punkt początkowy lub końcowy został wybrany nieprawidłowo");
         }
-        if(m.getEnd_x() == m.getSize_x()-1){
-            end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x()-1, m.getEnd_y()))));
-            graph.get(createLabel(m.getEnd_x()-1, m.getEnd_y())).addEdge(new Edge( graph.get(createLabel(m.getEnd_x()-1, m.getEnd_y())), end ));
-        }
-        if(m.getEnd_y() == 0){
-            end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x(), m.getEnd_y()+1))));
-            graph.get(createLabel(m.getEnd_x(), m.getEnd_y()+1)).addEdge(new Edge(graph.get(createLabel(m.getEnd_x(), m.getEnd_y()+1)), end));
-        }
-        if(m.getEnd_y() == m.getSize_y()-1){
-            end.addEdge(new Edge(end, graph.get(createLabel(m.getEnd_x(), m.getEnd_y()-1))));
-            graph.get(createLabel(m.getEnd_x(), m.getEnd_y()-1)).addEdge(new Edge(graph.get(createLabel(m.getEnd_x(), m.getEnd_y()-1)), end));
-        }
-        addNode(end);
 
         System.out.println("\nNode count: " + getNodeCount());
 
