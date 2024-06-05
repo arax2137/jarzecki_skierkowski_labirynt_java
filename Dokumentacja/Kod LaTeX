@@ -1,0 +1,137 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{JIMP2 Sprawozdanie z projektu w języku Java}
+\author{Łukasz Jarzęcki, Paweł Skierkowski}
+\date{Czerwiec 2024}
+
+\begin{document}
+
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\section{Wstęp}
+\par Celem projektu było stworzenie aplikacji okienkowej, która pozwala na wczytanie labiryntu oraz znalazienie najkrótszej ścieżki do wyjścia. Program został utworzony w języku Java z wykorzystaniem biblioteki Swing. Labirynt jest wczytywany do programu z pliku tekstowego lub binarnego oraz daje możliwość zapisu rozwiązania do pliku.
+\subsection{Problem zadania}
+\par Problemem zadania było zaimplementowanie przejrzystego interfejsu graficznego, który umożliwa prostą obsługę zawartych w programie funkcji. W odróżnieniu od projektu w języku C, tym razem nie obowiązywało nas ograniczenie czasowe oraz zużycia pamieci jednak algorytm miał znajdywać najkrótszą ścieżkę przez co musieliśmy wykorzystać inny algorytm, który został opisany w poniższej sekcji.
+\subsection{Sposób rozwiązania}
+\par Implementacja projektu polegała na stworzeniu kodu realizującego algorytm Dijkstry, który wykorzystując graf znajduje odległości pomiędzy kolejnymi węzłami przez co po dojściu do ostatniego punktu (wyjścia) jest w stanie wyznaczyć najkrótszą ścieżkę.
+\newpage
+\section{Implementacja}
+\subsection{Modularność}
+\par Kluczowym aspektem realizacji projektu było rozdzielenie go na moduły, co
+umożliwiło efektywną pracę i ułatwia zarzadzanie kodem. Dokonaliśmy podziału
+na następujace moduły:
+\begin{itemize}
+    \item \textbf{Operacje na plikach i potrzebne funkcje} (Maze.java): pobiera danych o labiryncie z pliku, tworzenie struktury, implementacja funkcji wykorzystywanych w pozostałych modułach, zapis rozwiązania. Dekodowanie pliku binarnego.
+    
+    \item \textbf{Interfejs graficzny} (GUI.java): moduł ten odpowiada za wyświetlanie okienka, w którym za pomocą stworzonych funkcji możliwe jest graficzne wyświetlanie działania algorytmu, zwiera działanie programu w przejrzysty interfejs.
+    
+    \item \textbf{Algorytm i implementacja grafu} (MazeGraph.java): w module tym zaimplementowany
+jest algorytm, który odpowiada za główne działanie programu. Tworzy graf a następnie przechodzi po węzłach szukając najkrótszej ścieżki.
+
+    \item \textbf{Węzły i przechowanie danych} (Node.java): przechowuje dane o węzłach i krawędziach wychodzących z nich.
+    
+    \item \textbf{Main} (Main.java): uruchomienie interfejsu graficznego.
+    
+    \item \textbf{Kierunek i odległość} (Edge.java):przechowuje dane o krawędziach, długość i węzeł docelowy.
+    
+\end{itemize}
+\newpage
+\subsection {Diagram klas}
+\par Diagram klas został wygenerowany przy użyciu InteliJ IDEA.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.1\linewidth]{diagram.png}
+    \caption{Diagram klas}
+\end{figure}
+\newpage
+\subsection{Wzorce projektowe}
+\par Metoda wytwórcza - w klasie Maze w metodzie mazeInit() sprawdzane jest rozszerzenie pliku i w zależności od niego labirynt jest inicjowany w różny sposób.
+\par Budowniczy - metody klasy Maze, takie jak getParamsB(), readB(), getSizeT(), readT(), krok po kroku odczytują i konstruują dane labiryntu.
+\par Obserwator - w klasie Gui wykorzystywany jest ActionListener do reagowania na akcje użytkownika.
+\par Kompozyt - w klasie MazeGraph labirynt jest reprezentowany za pomocą mapy węzłów, zawierających wychodzące z nich krawędzie, które z kolei zawierają docelowe węzły. Każdy z tych obiektów może być traktowany indywidualnie, lub jako część większej struktury.
+\newpage
+\section{Działanie programu}
+\par Klasa main uruchamia interfejs graficzny.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{image.png}
+    \caption{Main}
+\end{figure}
+\par W interfejsie zawarta jest zakładka menu umożliwiający otwarcie pliku, zapisanie, oraz zakładka narzędzia dzięki której możemy wybrać nowe punkty (początkowy i końcowy), znaleźć ścieżkę i wybrać grubość ściany.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{2.png}
+    \caption{GUI}
+    \label{fig:enter-label}
+\end{figure}
+\newpage
+\par Dzięki algorytmowi w module MazeGraph przedstawionym we fragmencie poniżej mamy możliwość odczytania ścieżki.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{3.png}
+    \caption{Algorytm}
+\end{figure}
+\par Dalej mamy możliwość zmiany grubości ścian, oraz zapisania rozwiązania do pliku dzięki funkcji zaimplementowanej w module Maze.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\linewidth]{4.png}
+    \caption{Enter Caption}
+    \label{fig:Zapis do pliku}
+\end{figure}
+\newpage
+\subsection{Uruchamianie programu}
+\par Aby uruchomić program przez konsolę należy początkowo go skompilować używając komendy \textbf{javac .java}, na następnie wywołać stosując \textbf{java Main}.
+\par Obraz uruchomionej aplikacji prezentuje się następująco:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{5.png}
+    \caption{Uruchomione okno aplikacji}
+\end{figure}
+\par Po wczytaniu przykładowego labiryntu z pliku w zakładce Menu->Otwórz wyświetlony zostaje obraz labiryntu:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{6.png}
+    \caption{Przykładowy labirynt}
+\end{figure}
+\newpage
+\par Z zakładki narzędzia możemy wybrać opcje.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{7.png}
+    \caption{Narzędzia}
+\end{figure}
+\par Grubość ścian możemy dostosować wedle upodobania:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{8.png}
+    \caption{Grubość ścian}
+\end{figure}
+\newpage
+\par W pasku narzędzi bo wybraniu opcji \textbf{Nowy punkt początkowy} lub\textbf{ Nowy punkt końcowy} możemy zmienić wejście i wyjście z labiryntu. Aby to zrobić po naciśnięciu przycisku należy nacisnąc LPM na wybrany kwadrat (część ściany) która znajduje się na obramowaniu (nie możemy wybrać wyjścia lub wejścia w środku labiryntu).
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{9.png}
+    \caption{NPP i NPK}
+\end{figure}
+\par Przechodząc do najważniejszego punktu w pasku narzędzi znajduje się opcja \textbf{Znajdź ścieżkę}, po naciśnięciu której otrzymujemy obraz ścieżki wyjścia z labiryntu.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{10.png}
+    \caption{Znaleziona droga}
+\end{figure}
+\newpage
+\par Ostatnią już właściwością jest możliwośc zapisu wyświetlanego labiryntu do folderu solutions.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{11.png}
+    \caption{Zapisane pliki}
+\end{figure}
+\section{Wnioski}
+\par Realizacja tego projektu pozwoliła nam na zapoznanie się ze środowiskiem Javy oraz biblioteki Swing. Poszerzyliśmy dalej naszą umiejętność pracy zespołowej przez dobry podział obowiązków i organizację czasu. Mogliśmy dzięki temu niezależnie pracować nad projektem w tym samym czasie dodając nowe funkcjonalności równolegle. 
+\par Projekt był wymagający pod kątem implementacji nowego algorytmu, którego nie wykorzystywaliśmy w innych projektach oraz obsługa bilbioteki Swing. To co podobało nam się bardziej, niż w przypadku projektu w C to efekt końcowy który jest schludny i estetyczny. 
+\par Po ukończeniu pracy jestem w stanie stwierdzić że praca nad tym projektem dodała nam obu wiele doświadczenia w zakresie pracy w języku Java. Projekt ten daje nam możliwość bycia kreatywnym przy pracy nad kolejnymi nowymi zadaniami, zarówno tymi które znamy jak i nowymi.
+
+\end{document}
